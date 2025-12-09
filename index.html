@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>PRINT3D STUDIO ✨ - Impresión 3D Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=Poppins:wght@300;400;600;700;800&amp;display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cyan: #00D9FF;
+            --magenta: #FF006E;
+            --yellow: #FFD60A;
+            --green: #00FF88;
+            --dark: #0a0a0a;
+            --gray: #1a1a1a;
+            --light: #f5f5f5;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body.admin-mode {
+            padding-bottom: 100px;
+        }
+
+        /* ANIMATED BACKGROUND */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 217, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(255, 0, 110, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255, 214, 10, 0.1) 0%, transparent 50%);
+            animation: backgroundMove 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundMove {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-5%, 5%) rotate(1deg); }
+            66% { transform: translate(5%, -5%) rotate(-1deg); }
+        }
+
+        /* ADMIN BAR */
+        #adminBar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, var(--magenta), #C8008E);
+            padding: 15px;
+            display: none;
+            gap: 10px;
+            z-index: 10000;
+            box-shadow: 0 -4px 30px rgba(255, 0, 110, 0.6);
+            flex-wrap: wrap;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+        }
+
+        body.admin-mode #adminBar {
+            display: flex;
+        }
+
+        .admin-btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .admin-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        }
+
+        /* HERO */
+        header {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--dark) 0%, var(--gray) 100%);
+            overflow: hidden;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 217, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(255, 0, 110, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 20%, rgba(255, 214, 10, 0.1) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            background: linear-gradient(to top, var(--dark), transparent);
+        }
+
+        .floating-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--cyan);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .particle:nth-child(2n) { background: var(--magenta); animation-delay: -5s; }
+        .particle:nth-child(3n) { background: var(--yellow); animation-delay: -10s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.3; }
+            50% { transform: translateY(-100px) translateX(50px) scale(1.5); opacity: 0.6; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: rgba(0, 217, 255, 0.15);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            animation: fadeInDown 1s ease-out;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--cyan), var(--magenta), var(--yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 1s ease-out 0.2s both;
+            line-height: 1.1;
+            text-shadow: 0 0 80px rgba(0, 217, 255, 0.5);
+            position: relative;
+        }
+
+        h1::after {
+            content: '✨';
+            position: absolute;
+            top: -20px;
+            right: -10px;
+            font-size: 2rem;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.3) rotate(180deg); opacity: 0.7; }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tagline {
+            font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 3rem;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease-out 0.4s both;
+            font-weight: 300;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tagline strong {
+            color: var(--light);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--cyan), var(--magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            padding: 1.3rem 3.5rem;
+            background: linear-gradient(135deg, var(--cyan), var(--magenta));
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 50px;
+            box-shadow: 0 10px 50px rgba(0, 217, 255, 0.5);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeInUp 1s ease-out 0.6s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .hero-cta:hover::before {
+            left: 100%;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 80px rgba(0, 217, 255, 0.8);
+        }
+
+        /* FILTERS */
+        #filters {
+            background: rgba(26, 26, 26, 0.8);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            border-bottom: 3px solid var(--cyan);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .filters-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .filter-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            margin: 0.5rem;
+            background: rgba(0, 217, 255, 0.1);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            color: var(--light);
+            cursor: pointer;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(0, 217, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .filter-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .filter-btn:hover {
+            background: rgba(0, 217, 255, 0.15);
+            border-color: var(--cyan);
+            transform: translateY(-3px);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--cyan), var(--magenta));
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 217, 255, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .filter-btn.deletable {
+            padding-right: 50px;
+        }
+
+        .remove-category-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 0, 110, 0.8);
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            line-height: 1;
+            display: none;
+        }
+
+        body.admin-mode .filter-btn.deletable .remove-category-btn {
+            display: block;
+        }
+
+        .add-category-btn {
+            background: rgba(0, 255, 136, 0.2) !important;
+            border-color: var(--green) !important;
+            color: var(--green) !important;
+        }
+
+        /* PRODUCTS */
+        #productsSection {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--cyan), var(--magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.8rem;
+        }
+
+        .section-header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2.5rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .product-card {
+            background: rgba(26, 26, 26, 0.6);
+            border-radius: 25px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            border: 2px solid rgba(0, 217, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(255, 0, 110, 0.1));
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: 0;
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            border-color: var(--cyan);
+            box-shadow: 
+                0 25px 70px rgba(0, 217, 255, 0.4),
+                0 0 0 1px rgba(0, 217, 255, 0.2);
+        }
+
+        .product-image-container {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.05), rgba(255, 0, 110, 0.05));
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.15) rotate(2deg);
+        }
+
+        .product-badges {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 900;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            animation: slideInLeft 0.5s ease-out, pulse-badge 2s ease-in-out infinite 1s;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes pulse-badge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .badge-new {
+            background: linear-gradient(135deg, var(--green), #00CC70);
+            color: white;
+        }
+
+        .badge-featured {
+            background: linear-gradient(135deg, var(--yellow), #FFC700);
+            color: var(--dark);
+        }
+
+        .badge-custom {
+            background: linear-gradient(135deg, var(--magenta), #C8008E);
+            color: white;
+        }
+
+        .badge-limited {
+            background: linear-gradient(135deg, #FF4500, #FF6B00);
+            color: white;
+        }
+
+        .product-price-overlay {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, var(--cyan), var(--magenta));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 900;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.6);
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        .image-count-badge {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .product-info {
+            padding: 1.8rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .product-category {
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
+        }
+
+        .product-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--light);
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .product-preview {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+
+        .delete-product-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            display: none;
+        }
+
+        body.admin-mode .delete-product-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .delete-product-btn:hover {
+            transform: scale(1.2) rotate(90deg);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+        }
+
+        .edit-product-btn {
+            position: absolute;
+            top: 15px;
+            right: 65px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #F59E0B, #EAB308);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+            display: none;
+        }
+
+        body.admin-mode .edit-product-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit-product-btn:hover {
+            transform: scale(1.2) rotate(-15deg);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            animation: fadeIn 0.3s ease-out;
+            backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--gray);
+            padding: 3rem;
+            border-radius: 24px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--magenta);
+            color: white;
+            border: none;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 0, 110, 0.5);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg) scale(1.1);
+            background: #C8008E;
+            box-shadow: 0 8px 25px rgba(255, 0, 110, 0.7);
+        }
+
+        /* PRODUCT VIEW MODAL */
+        .product-gallery {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 2.5rem;
+            background: var(--dark);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+
+        .gallery-image.active {
+            display: block;
+        }
+
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 217, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid var(--cyan);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-nav:hover {
+            background: var(--cyan);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .gallery-prev {
+            left: 20px;
+        }
+
+        .gallery-next {
+            right: 20px;
+        }
+
+        .gallery-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .gallery-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .gallery-dot:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(1.2);
+        }
+
+        .gallery-dot.active {
+            background: var(--cyan);
+            transform: scale(1.4);
+            border-color: white;
+        }
+
+        .product-detail-name {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--light);
+            margin-bottom: 1rem;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .product-detail-price {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--cyan), var(--magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+        }
+
+        .product-detail-description {
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 2;
+            font-size: 1.15rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .whatsapp-btn {
+            display: inline-block;
+            padding: 1.5rem 4rem;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            text-decoration: none;
+            font-size: 1.4rem;
+            font-weight: 900;
+            border-radius: 50px;
+            transition: all 0.4s;
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(37, 211, 102, 0.7);
+        }
+
+        /* WHATSAPP FLOAT */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 75px;
+            height: 75px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 9998;
+            text-decoration: none;
+            animation: pulse-whatsapp 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-whatsapp {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.2) !important;
+            box-shadow: 0 12px 35px rgba(37, 211, 102, 0.8);
+        }
+
+        body.admin-mode .whatsapp-float {
+            bottom: 120px;
+        }
+
+        /* FORM */
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--cyan);
+            font-weight: 700;
+            margin-bottom: 0.7rem;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--dark);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 12px;
+            color: var(--light);
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+        }
+
+        .form-group textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            color: var(--light) !important;
+            text-transform: none !important;
+            letter-spacing: 0 !important;
+            font-weight: 600 !important;
+            cursor: pointer;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .btn-save,
+        .btn-cancel {
+            flex: 1;
+            padding: 1.2rem;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--cyan), var(--magenta));
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.4);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 217, 255, 0.6);
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .image-preview-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .image-preview-item {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 3px solid var(--cyan);
+        }
+
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-image-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--magenta);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-image-btn:hover {
+            transform: scale(1.2) rotate(90deg);
+        }
+
+        /* CATEGORIES MODAL */
+        .categories-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem;
+            background: rgba(0, 217, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 2px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .category-item span {
+            color: var(--light);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .category-item button {
+            background: linear-gradient(135deg, var(--magenta), #C8008E);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .category-item button:hover {
+            transform: scale(1.05);
+        }
+
+        /* ABOUT */
+        #about {
+            background: linear-gradient(135deg, var(--gray) 0%, var(--dark) 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-top: 3px solid var(--cyan);
+        }
+
+        #about h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--cyan), var(--magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+        }
+
+        #about p {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--dark);
+            padding: 2.5rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            border-top: 2px solid var(--cyan);
+            font-size: 1rem;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-state h3 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            body.admin-mode {
+                padding-bottom: 120px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .product-gallery {
+                height: 300px;
+            }
+
+            .modal-content {
+                padding: 2rem;
+            }
+
+            .whatsapp-float {
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
+            }
+
+            body.admin-mode .whatsapp-float {
+                bottom: 140px;
+            }
+
+            .checkbox-group {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--cyan), var(--magenta));
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--magenta), var(--cyan));
+        }
+    
+.delete-product-btn, .remove-category-btn, .add-category-btn, #adminBar, #productModal, #categoriesModal { display: none !important; }</style>
+</head>
+<body class="">
+    <div class="animated-bg"></div>
+
+    <!-- ADMIN BAR -->
+    
+
+    <!-- HERO -->
+    <header>
+        <div class="floating-particles"><div class="particle" style="left: 84.9449%; top: 77.7726%; animation-delay: 6.93912s; animation-duration: 22.3119s;"></div><div class="particle" style="left: 57.1204%; top: 27.5913%; animation-delay: 5.83768s; animation-duration: 15.1507s;"></div><div class="particle" style="left: 59.0222%; top: 14.829%; animation-delay: 0.671475s; animation-duration: 20.6979s;"></div><div class="particle" style="left: 60.4396%; top: 4.16335%; animation-delay: 5.16253s; animation-duration: 19.8038s;"></div><div class="particle" style="left: 83.2886%; top: 6.94308%; animation-delay: 9.39727s; animation-duration: 19.5659s;"></div><div class="particle" style="left: 7.38848%; top: 55.1115%; animation-delay: 9.32715s; animation-duration: 15.6364s;"></div><div class="particle" style="left: 58.6185%; top: 2.24293%; animation-delay: 7.44959s; animation-duration: 24.8442s;"></div><div class="particle" style="left: 7.60371%; top: 29.0613%; animation-delay: 7.47957s; animation-duration: 16.9008s;"></div><div class="particle" style="left: 21.8138%; top: 66.9724%; animation-delay: 5.75805s; animation-duration: 22.6663s;"></div><div class="particle" style="left: 0.246112%; top: 23.6714%; animation-delay: 6.2996s; animation-duration: 19.4793s;"></div><div class="particle" style="left: 30.38%; top: 30.27%; animation-delay: 4.35459s; animation-duration: 17.4079s;"></div><div class="particle" style="left: 4.16167%; top: 49.1683%; animation-delay: 8.32568s; animation-duration: 15.5356s;"></div><div class="particle" style="left: 24.7983%; top: 61.8615%; animation-delay: 7.13991s; animation-duration: 24.2473s;"></div><div class="particle" style="left: 85.3151%; top: 34.5074%; animation-delay: 6.17686s; animation-duration: 21.1424s;"></div><div class="particle" style="left: 17.2618%; top: 23.1792%; animation-delay: 8.67907s; animation-duration: 21.081s;"></div><div class="particle" style="left: 77.32%; top: 29.3801%; animation-delay: 7.08924s; animation-duration: 20.6543s;"></div><div class="particle" style="left: 91.3092%; top: 93.4143%; animation-delay: 2.96075s; animation-duration: 16.5452s;"></div><div class="particle" style="left: 68.3423%; top: 92.3072%; animation-delay: 7.78241s; animation-duration: 24.9294s;"></div><div class="particle" style="left: 94.124%; top: 10.8565%; animation-delay: 7.55516s; animation-duration: 21.8228s;"></div><div class="particle" style="left: 7.51553%; top: 3.27352%; animation-delay: 5.5269s; animation-duration: 19.3734s;"></div></div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                🚀 Tecnología 3D • Diseños Únicos ✨
+            </div>
+            <h1>PRINT3D STUDIO</h1>
+            <p class="tagline">
+                Transformamos tus <strong>ideas</strong> en realidad con impresión 3D de <strong>alta precisión</strong>. 
+                Diseños únicos, calidad excepcional 🖨️💎
+            </p>
+            <a href="#productsSection" class="hero-cta">🛍️ Ver Productos</a>
+        </div>
+    </header>
+
+    <!-- FILTERS -->
+    <section id="filters">
+        <div class="filters-title">🎯 Explora por Categoría</div>
+        <div id="categoryFilters"><button class="filter-btn deletable" onclick="filterProducts('lighting', event)">
+                    🏮 Iluminación
+                    </button>
+                <button class="filter-btn deletable" onclick="filterProducts('planters', event)">
+                    🌿 Macetas &amp; Jardín
+                    </button>
+                <button class="filter-btn deletable" onclick="filterProducts('organizers', event)">
+                    📦 Organizadores
+                    </button>
+                <button class="filter-btn deletable" onclick="filterProducts('decor', event)">
+                    🎨 Decoración
+                    </button>
+                <button class="filter-btn deletable" onclick="filterProducts('sports', event)">
+                    🏊 Deportes &amp; Torneos
+                    </button>
+                <button class="filter-btn deletable" onclick="filterProducts('custom', event)">
+                    ✨ Personalizado
+                    </button>
+                <button class="filter-btn deletable active" onclick="filterProducts('llaveros', event)">
+                    Llaveros
+                    </button>
+                </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="productsSection">
+        <div class="section-header">
+            <h2>Nuestros Productos ✨</h2>
+            <p>Explorá nuestra colección de diseños únicos</p>
+        </div>
+        <div id="productsGrid" class="products-grid"><div class="empty-state"><h3>📭 No hay productos en esta categoría</h3><p>¡Agregá el primero!</p></div></div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+        <h2>Sobre Nosotros 🎨</h2>
+        <p id="aboutText">Somos especialistas en impresión 3D, creando productos únicos y personalizados. Cada pieza es diseñada con precisión y fabricada con materiales de alta calidad. Desde iluminación moderna hasta organizadores funcionales, transformamos ideas en realidad.</p>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2024 PRINT3D STUDIO | Tucumán, Argentina 🇦🇷</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Impresión 3D Personalizada • Diseños Únicos ✨</p>
+    </footer>
+
+    <!-- WHATSAPP FLOAT -->
+    <a href="https://wa.me/5493813004867?text=Hola!%20Quiero%20consultar%20sobre%20los%20productos%20🖨️" class="whatsapp-float" target="_blank">💬</a>
+
+    <!-- PRODUCT VIEW MODAL -->
+    <div id="productViewModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeProductView()">×</button>
+            <div class="product-gallery" id="productGallery">
+                <button class="gallery-nav gallery-prev" onclick="changeProductImage(-1)">‹</button>
+                <button class="gallery-nav gallery-next" onclick="changeProductImage(1)">›</button>
+                <div class="gallery-indicators" id="galleryIndicators"></div>
+            </div>
+            <div id="productDetailInfo"></div>
+        </div>
+    </div>
+
+    <!-- ADD/EDIT PRODUCT MODAL -->
+    
+
+    <!-- CATEGORIES MODAL -->
+    
+
+    <script>
+        // DATA
+        let products = [{"id":1765162566600,"name":"Llavero torpedo natación personalizado ","price":"$3500","category":"llaveros","description":"","images":["https://i.imgur.com/hivCaKR.jpeg?v=20251209131349","https://i.imgur.com/IuClYG7.jpeg?v=20251209131349"],"isFeatured":false,"isNew":false,"isCustomizable":true,"isLimited":false},{"id":1765156449887,"name":"Pingüino flexible","price":"$3500","category":"llaveros","description":"Pingüino flexible y llavero","images":["https://i.imgur.com/6aMOxKw.jpeg?v=20251209131349"],"isFeatured":false,"isNew":false,"isCustomizable":false,"isLimited":false},{"id":1765206359962,"name":"Escultura del Día de la Madre ","price":"$4500","category":"decor","description":"El regalo perfecto para una madre.\n","images":["https://i.imgur.com/nb71Neq.jpeg?v=20251209131349"],"isFeatured":false,"isNew":false,"isCustomizable":false,"isLimited":false},{"id":1765206632882,"name":"Bolsa de efecto tejido impresa en 3D","price":"$5000","category":"planters","description":"¡Un diseño de jarrón único que imita el aspecto de un saco de tela arrugado! El modelo \"Soft Bag\" combina la suavidad visual de la tela con el encanto de la textura plástica en capas. Perfecto como recipiente decorativo, portalápices o pequeño macetero para plantas artificiales.","images":["https://i.imgur.com/Awh97z3.jpeg?v=20251209131349"],"isFeatured":false,"isNew":false,"isCustomizable":false,"isLimited":false},{"id":1765210588696,"name":"Billetera de tarjetas en cascada","price":"3500","category":"organizers","description":"","images":["https://i.imgur.com/19trmLW.jpeg?v=20251209131349","https://i.imgur.com/tlNkApW.jpeg?v=20251209131349","https://i.imgur.com/atx9kfl.jpeg?v=20251209131349"],"isFeatured":false,"isNew":false,"isCustomizable":false,"isLimited":false},{"id":1765210812119,"name":"Llavero camión de bomberos","price":"$2000","category":"llaveros","description":"Este llavero de camión de bomberos, rico en detalles, es el accesorio perfecto para los entusiastas de los bomberos, los equipos de emergencias o como un regalo especial ¡Tu nombre o texto deseado se puede personalizar individualmente!","images":["https://i.imgur.com/rjuQsyv.png?v=20251209131349","https://i.imgur.com/UYnwpLi.jpeg?v=20251209131349"],"isFeatured":false,"isNew":false,"isCustomizable":true,"isLimited":false},{"id":1765211283504,"name":"BolaVórtice","price":"$2000","category":"decor","description":"Este modelo presenta un intrincado diseño en espiral que crea una experiencia visual dinámica, perfecta como pieza central decorativa o un regalo único para entusiastas del arte y la tecnología.\n","images":["https://i.imgur.com/WjuJ4P6.jpeg?v=20251209131349","https://i.imgur.com/RUCrD7u.jpeg?v=20251209131349"],"isFeatured":false,"isNew":false,"isCustomizable":false,"isLimited":false},{"id":1765211449615,"name":"Porta-incenso de mão de Fátima","price":"$4000","category":"decor","description":"","images":["https://i.imgur.com/LVdCOYh.jpeg?v=20251209131349"],"isFeatured":false,"isNew":false,"isCustomizable":false,"isLimited":false},{"id":1765211619488,"name":"Árbol de Navidad Pop Up","price":"$3000","category":"decor","description":"","images":["https://i.imgur.com/Ujtz9BF.jpeg?v=20251209131349"],"isFeatured":false,"isNew":false,"isCustomizable":false,"isLimited":false},{"id":1765211853896,"name":"Oso dormilón ","price":"$1500","category":"decor","description":"","images":["https://i.imgur.com/VRW0xZJ.jpeg?v=20251209131349"],"isFeatured":false,"isNew":false,"isCustomizable":false,"isLimited":false},{"id":1765212022775,"name":"Linda ardilla feliz con nuez","price":"$2500","category":"decor","description":"Aquí tienes un animal súper lindo","images":["https://i.imgur.com/IyL14BB.jpeg?v=20251209131349"],"isFeatured":false,"isNew":false,"isCustomizable":false,"isLimited":false},{"id":1765212180680,"name":"Llavero Hexagonal Fidget","price":"$1500","category":"llaveros","description":"","images":["https://i.imgur.com/CgQoCh0.png?v=20251209131349","https://i.imgur.com/78sQ6na.jpeg?v=20251209131349"],"isFeatured":false,"isNew":false,"isCustomizable":false,"isLimited":false},{"id":1765212461384,"name":"De la imágen a la estatuilla ","price":"A consultar","category":"custom","description":"","images":["https://i.imgur.com/JgUE2LA.jpeg?v=20251209131349","https://i.imgur.com/kL5sxS2.jpeg?v=20251209131349","https://i.imgur.com/l7MxIvN.png?v=20251209131349"],"isFeatured":true,"isNew":false,"isCustomizable":true,"isLimited":false},{"id":1765296648969,"name":"Macetero de tela suave inflado para plantas","price":"$4000","category":"planters","description":"En este momento me fascinan las macetas modernas para todas mis plantas en casa.\n\n¡Espero que te guste el diseño!\n","images":["https://i.imgur.com/74Zooti.jpeg?v=20251209131349","https://i.imgur.com/hRqoyJy.jpeg?v=20251209131349"],"isFeatured":false,"isNew":false,"isCustomizable":false,"isLimited":false}];
+        let categories = [{"id":"lighting","name":"🏮 Iluminación"},{"id":"planters","name":"🌿 Macetas & Jardín"},{"id":"organizers","name":"📦 Organizadores"},{"id":"decor","name":"🎨 Decoración"},{"id":"sports","name":"🏊 Deportes & Torneos"},{"id":"custom","name":"✨ Personalizado"},{"id":"llaveros","name":"Llaveros"}];
+        let isAdminMode = false;
+        let currentViewProduct = null;
+        let currentImageIndex = 0;
+        let tempImages = [];
+        let editingProductId = null;
+
+        // INIT
+        function init() {
+            loadData();
+            createFloatingParticles();
+            renderCategories();
+            renderProducts();
+            
+            // Triple click to activate admin
+            document.querySelector('h1').addEventListener('click', function(e) {
+                if (e.detail === 3) {
+                    toggleAdminMode();
+                }
+            });
+        }
+
+        function createFloatingParticles() {
+            const container = document.querySelector('.floating-particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        function toggleAdminMode() {
+            isAdminMode = !isAdminMode;
+            document.body.classList.toggle('admin-mode');
+            alert(isAdminMode ? '🔓 Modo edición activado' : '🔒 Modo público');
+        }
+
+        // DATA PERSISTENCE
+        function saveAllData() {
+            try {
+                // localStorage.setItem('print3d-products', JSON.stringify(products));
+                // localStorage.setItem('print3d-categories', JSON.stringify(categories));
+                console.log('💾 Datos guardados');
+                return true;
+            } catch (e) {
+                console.error('❌ Error guardando:', e);
+                if (e.name === 'QuotaExceededError') {
+                    alert('⚠️ STORAGE LLENO!\n\nUsá links de Imgur en vez de subir fotos desde la compu.');
+                }
+                return false;
+            }
+        }
+
+        function loadData() {
+            const savedProducts = null;
+            const savedCategories = null;
+            
+            if (savedProducts) {
+                try {
+                    products = JSON.parse(savedProducts);
+                } catch (e) {
+                    console.error('Error loading products:', e);
+                }
+            }
+            
+            if (savedCategories) {
+                try {
+                    const parsed = JSON.parse(savedCategories);
+                    if (parsed.length > 2) categories = parsed;
+                } catch (e) {
+                    console.error('Error loading categories:', e);
+                }
+            }
+        }
+
+        // Auto-save
+        // auto-save removed
+        window.addEventListener('beforeunload', saveAllData);
+
+        // CATEGORIES
+        function renderCategories() {
+            const container = document.getElementById('categoryFilters');
+            const select = document.getElementById('productCategory');
+            
+            let html = '';
+            let selectHTML = '';
+            
+            categories.forEach((cat, index) => {
+                const isActive = index === 0 ? 'active' : '';
+                html += `<button class="filter-btn deletable ${isActive}" onclick="filterProducts('${cat.id}', event)">
+                    ${cat.name}
+                    <button class="remove-category-btn" onclick="event.stopPropagation(); removeCategory('${cat.id}')">×</button>
+                </button>`;
+                selectHTML += `<option value="${cat.id}">${cat.name}</option>`;
+            });
+            
+            html += '<button class="filter-btn add-category-btn" onclick="manageCategoriesModal()">➕ Agregar Categoría</button>';
+            
+            container.innerHTML = html;
+            if (select) select.innerHTML = selectHTML;
+        }
+
+        function filterProducts(categoryId, event) {
+            if (event) {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                event.target.classList.add('active');
+            }
+            renderProducts(categoryId);
+        }
+
+        function manageCategoriesModal() {
+            document.getElementById('newCategoryName').value = '';
+            document.getElementById('newCategoryIcon').value = '';
+            updateCategoriesList();
+            document.getElementById('categoriesModal').classList.add('show');
+        }
+
+        function closeCategoriesModal() {
+            document.getElementById('categoriesModal').classList.remove('show');
+        }
+
+        function updateCategoriesList() {
+            document.getElementById('categoriesList').innerHTML = categories.map(cat => `
+                <div class="category-item">
+                    <span>${cat.name}</span>
+                    <button onclick="removeCategory('${cat.id}')">Eliminar</button>
+                </div>
+            `).join('');
+        }
+
+        function addCategory() {
+            const name = document.getElementById('newCategoryName').value.trim();
+            const icon = document.getElementById('newCategoryIcon').value.trim();
+            
+            if (!name) return alert('Ingresá un nombre para la categoría');
+            
+            const id = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            if (categories.find(c => c.id === id)) return alert('Ya existe una categoría con ese nombre');
+            
+            const fullName = icon ? `${icon} ${name}` : name;
+            categories.push({ id, name: fullName });
+            saveAllData();
+            renderCategories();
+            updateCategoriesList();
+            document.getElementById('newCategoryName').value = '';
+            document.getElementById('newCategoryIcon').value = '';
+            alert('✅ Categoría agregada!');
+        }
+
+        function removeCategory(id) {
+            if (confirm('¿Borrar esta categoría? Los productos NO se borrarán.')) {
+                categories = categories.filter(c => c.id !== id);
+                saveAllData();
+                renderCategories();
+                updateCategoriesList();
+            }
+        }
+
+        // PRODUCTS
+        function renderProducts(filter = null) {
+            // Si no hay filtro, usar la primera categoría
+            if (!filter && categories.length > 0) {
+                filter = categories[0].id;
+            }
+            
+            let filtered = products.filter(p => p.category === filter);
+            
+            // Sort: newest first
+            filtered.sort((a, b) => b.id - a.id);
+            
+            const container = document.getElementById('productsGrid');
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>📭 No hay productos en esta categoría</h3><p>¡Agregá el primero!</p></div>';
+                return;
+            }
+            
+            container.innerHTML = filtered.map(createProductCard).join('');
+        }
+
+        function createProductCard(product) {
+            const hasImages = product.images && product.images.length > 0;
+            const imgSrc = hasImages ? product.images[0] : '';
+            const imageElement = hasImages 
+                ? `<img src="${imgSrc}" class="product-image" alt="${product.name}">` 
+                : `<div class="product-image" style="display:flex;align-items:center;justify-content:center;font-size:6rem;">🖨️</div>`;
+            
+            const category = categories.find(c => c.id === product.category);
+            const preview = product.description && product.description.length > 100 
+                ? product.description.substring(0, 100) + '...' 
+                : product.description || '';
+
+            // Badges
+            let badges = '';
+            if (product.isNew) badges += '<span class="badge badge-new">🆕 Nuevo</span>';
+            if (product.isFeatured) badges += '<span class="badge badge-featured">⭐ Destacado</span>';
+            if (product.isCustomizable) badges += '<span class="badge badge-custom">🎨 Personalizable</span>';
+            if (product.isLimited) badges += '<span class="badge badge-limited">🔥 ¡Últimas!</span>';
+
+            const imageCount = hasImages && product.images.length > 1 
+                ? `<div class="image-count-badge">📷 ${product.images.length} fotos</div>` 
+                : '';
+
+            return `
+                <div class="product-card" onclick="viewProduct(${product.id})">
+                    <button class="edit-product-btn" onclick="event.stopPropagation(); editProduct(${product.id})">✏️</button>
+                    <button class="delete-product-btn" onclick="event.stopPropagation(); deleteProduct(${product.id})">🗑️</button>
+                    <div class="product-image-container">
+                        ${imageElement}
+                        <div class="product-badges">${badges}</div>
+                        <div class="product-price-overlay">${product.price}</div>
+                        ${imageCount}
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">${category ? category.name : 'Sin categoría'}</span>
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-preview">${preview}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function viewProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            currentViewProduct = product;
+            currentImageIndex = 0;
+
+            const gallery = document.getElementById('productGallery');
+            const hasImages = product.images && product.images.length > 0;
+            
+            if (hasImages) {
+                gallery.innerHTML = `
+                    ${product.images.map((img, i) => `
+                        <img src="${img}" class="gallery-image ${i === 0 ? 'active' : ''}" alt="${product.name}">
+                    `).join('')}
+                    <button class="gallery-nav gallery-prev" onclick="changeProductImage(-1)">‹</button>
+                    <button class="gallery-nav gallery-next" onclick="changeProductImage(1)">›</button>
+                    <div class="gallery-indicators" id="galleryIndicators">
+                        ${product.images.map((_, i) => `
+                            <div class="gallery-dot ${i === 0 ? 'active' : ''}" onclick="goToImage(${i})"></div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                gallery.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;font-size:8rem;height:100%;">🖨️</div>';
+            }
+
+            let badges = '';
+            if (product.isNew) badges += '<span class="badge badge-new">🆕 Nuevo</span>';
+            if (product.isFeatured) badges += '<span class="badge badge-featured">⭐ Destacado</span>';
+            if (product.isCustomizable) badges += '<span class="badge badge-custom">🎨 Personalizable</span>';
+            if (product.isLimited) badges += '<span class="badge badge-limited">🔥 ¡Últimas!</span>';
+
+            const productInfo = `
+                <div style="padding: 0 1rem;">
+                    <div style="display: flex; gap: 0.8rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                        ${badges}
+                    </div>
+                    <h2 class="product-detail-name">${product.name}</h2>
+                    <div class="product-detail-price">${product.price}</div>
+                    <p class="product-detail-description">${product.description || 'Producto de alta calidad fabricado con impresión 3D. Diseño único y personalizado.'}</p>
+                    <a href="https://wa.me/5493813004867?text=Hola!%20Me%20interesa%20${encodeURIComponent(product.name)}%20🖨️" 
+                       class="whatsapp-btn" target="_blank">
+                        📱 Consultar por WhatsApp
+                    </a>
+                </div>
+            `;
+
+            document.getElementById('productDetailInfo').innerHTML = productInfo;
+            document.getElementById('productViewModal').classList.add('show');
+        }
+
+        function closeProductView() {
+            document.getElementById('productViewModal').classList.remove('show');
+            currentViewProduct = null;
+        }
+
+        function changeProductImage(direction) {
+            if (!currentViewProduct || !currentViewProduct.images || currentViewProduct.images.length <= 1) return;
+            
+            const images = document.querySelectorAll('.gallery-image');
+            const dots = document.querySelectorAll('.gallery-dot');
+            
+            images[currentImageIndex].classList.remove('active');
+            dots[currentImageIndex].classList.remove('active');
+            
+            currentImageIndex += direction;
+            if (currentImageIndex < 0) currentImageIndex = currentViewProduct.images.length - 1;
+            if (currentImageIndex >= currentViewProduct.images.length) currentImageIndex = 0;
+            
+            images[currentImageIndex].classList.add('active');
+            dots[currentImageIndex].classList.add('active');
+        }
+
+        function goToImage(index) {
+            if (!currentViewProduct || !currentViewProduct.images) return;
+            
+            const images = document.querySelectorAll('.gallery-image');
+            const dots = document.querySelectorAll('.gallery-dot');
+            
+            images[currentImageIndex].classList.remove('active');
+            dots[currentImageIndex].classList.remove('active');
+            
+            currentImageIndex = index;
+            
+            images[currentImageIndex].classList.add('active');
+            dots[currentImageIndex].classList.add('active');
+        }
+
+        // PRODUCT MANAGEMENT
+        function openAddProductModal() {
+            editingProductId = null;
+            document.getElementById('productModalTitle').textContent = '✨ Agregar Producto';
+            document.getElementById('saveProductBtn').textContent = '💾 Guardar Producto';
+            document.getElementById('productForm').reset();
+            document.getElementById('imagesPreviewContainer').innerHTML = '';
+            tempImages = [];
+            document.getElementById('productModal').classList.add('show');
+        }
+
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            editingProductId = id;
+            document.getElementById('productModalTitle').textContent = '✏️ Editar Producto';
+            document.getElementById('saveProductBtn').textContent = '✅ Actualizar Producto';
+            
+            // Cargar datos del producto
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productDescription').value = product.description || '';
+            document.getElementById('isFeatured').checked = product.isFeatured || false;
+            document.getElementById('isNew').checked = product.isNew || false;
+            document.getElementById('isCustomizable').checked = product.isCustomizable || false;
+            document.getElementById('isLimited').checked = product.isLimited || false;
+            
+            // Cargar imágenes existentes
+            tempImages = product.images ? [...product.images] : [];
+            renderImagePreviews();
+            
+            document.getElementById('productModal').classList.add('show');
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('show');
+            editingProductId = null;
+        }
+
+        function addImageFromURL() {
+            const url = document.getElementById('imageURL').value.trim();
+            if (!url) return alert('Pegá el link de la imagen');
+            
+            if (!url.startsWith('http')) {
+                return alert('El link debe empezar con http:// o https://');
+            }
+            
+            tempImages.push(url);
+            document.getElementById('imageURL').value = '';
+            renderImagePreviews();
+        }
+
+        function compressImage(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const maxWidth = 1200;
+                    if (width > maxWidth) {
+                        height = (height * maxWidth) / width;
+                        width = maxWidth;
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/jpeg', 0.75));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function previewImages(event) {
+            const files = Array.from(event.target.files);
+            files.forEach(file => {
+                if (tempImages.length >= 10) return alert('Máximo 10 imágenes por producto');
+                compressImage(file, function(compressed) {
+                    tempImages.push(compressed);
+                    renderImagePreviews();
+                    console.log('✅ Imagen comprimida y agregada');
+                });
+            });
+            event.target.value = '';
+        }
+
+        function renderImagePreviews() {
+            document.getElementById('imagesPreviewContainer').innerHTML = tempImages.map((img, i) => `
+                <div class="image-preview-item">
+                    <img src="${img}">
+                    <button type="button" class="remove-image-btn" onclick="removePreviewImage(${i})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function removePreviewImage(index) {
+            tempImages.splice(index, 1);
+            renderImagePreviews();
+        }
+
+        function saveProduct(event) {
+            event.preventDefault();
+            
+            if (editingProductId) {
+                // EDITAR producto existente
+                const productIndex = products.findIndex(p => p.id === editingProductId);
+                if (productIndex !== -1) {
+                    products[productIndex] = {
+                        ...products[productIndex],
+                        name: document.getElementById('productName').value,
+                        price: document.getElementById('productPrice').value,
+                        category: document.getElementById('productCategory').value,
+                        description: document.getElementById('productDescription').value,
+                        images: [...tempImages],
+                        isFeatured: document.getElementById('isFeatured').checked,
+                        isNew: document.getElementById('isNew').checked,
+                        isCustomizable: document.getElementById('isCustomizable').checked,
+                        isLimited: document.getElementById('isLimited').checked
+                    };
+                    alert('✅ Producto actualizado exitosamente!');
+                }
+            } else {
+                // AGREGAR nuevo producto
+                const product = {
+                    id: Date.now(),
+                    name: document.getElementById('productName').value,
+                    price: document.getElementById('productPrice').value,
+                    category: document.getElementById('productCategory').value,
+                    description: document.getElementById('productDescription').value,
+                    images: [...tempImages],
+                    isFeatured: document.getElementById('isFeatured').checked,
+                    isNew: document.getElementById('isNew').checked,
+                    isCustomizable: document.getElementById('isCustomizable').checked,
+                    isLimited: document.getElementById('isLimited').checked
+                };
+                products.push(product);
+                alert('✅ Producto agregado exitosamente!');
+            }
+            
+            saveAllData();
+            renderProducts();
+            closeProductModal();
+        }
+
+        function deleteProduct(id) {
+            if (confirm('¿Borrar este producto?')) {
+                products = products.filter(p => p.id !== id);
+                saveAllData();
+                renderProducts();
+            }
+        }
+
+        // EDIT TEXT
+        function editText(selector) {
+            const element = document.querySelector(selector);
+            if (!element) return;
+            
+            const currentText = element.textContent;
+            const newText = prompt('Editar texto:', currentText);
+            if (newText !== null && newText.trim() !== '') {
+                element.textContent = newText;
+                saveAllData();
+            }
+        }
+
+        // EXPORT
+        function exportHTML() {
+            alert('📦 Generando archivos...');
+            
+            const now = new Date();
+            const versionTimestamp = '' + now.getFullYear() + 
+                                    ('0' + (now.getMonth()+1)).slice(-2) + 
+                                    ('0' + now.getDate()).slice(-2) + 
+                                    ('0' + now.getHours()).slice(-2) + 
+                                    ('0' + now.getMinutes()).slice(-2) + 
+                                    ('0' + now.getSeconds()).slice(-2);
+            
+            const productosExport = JSON.parse(JSON.stringify(products));
+            productosExport.forEach(p => {
+                if (p.images && p.images.length > 0) {
+                    p.images = p.images.map(img => {
+                        if (img.startsWith('data:')) {
+                            return img;
+                        }
+                        return img + '?v=' + versionTimestamp;
+                    });
+                }
+            });
+            
+            const clone = document.documentElement.cloneNode(true);
+            
+            clone.querySelector('#adminBar')?.remove();
+            clone.querySelectorAll('.delete-product-btn, .remove-category-btn, .add-category-btn').forEach(el => el.remove());
+            clone.querySelector('body')?.classList.remove('admin-mode');
+            clone.querySelector('#productModal')?.remove();
+            clone.querySelector('#categoriesModal')?.remove();
+            
+            const style = clone.querySelector('style');
+            if (style) {
+                style.textContent += '\n.delete-product-btn, .remove-category-btn, .add-category-btn, #adminBar, #productModal, #categoriesModal { display: none !important; }';
+            }
+            
+            const script = clone.querySelector('script');
+            let code = script.textContent;
+            
+            code = code.replace(/let products = \[.*?\];/s, 'let products = ' + JSON.stringify(productosExport) + ';');
+            code = code.replace(/let categories = \[.*?\];/s, 'let categories = ' + JSON.stringify(categories) + ';');
+            code = code.replace(/let isAdminMode = .*?;/, 'let isAdminMode = false;');
+            
+            code = code.replace(/const savedProducts = localStorage\.getItem\('print3d-products'\);/g, 'const savedProducts = null;');
+            code = code.replace(/const savedCategories = localStorage\.getItem\('print3d-categories'\);/g, 'const savedCategories = null;');
+            code = code.replace(/localStorage\.setItem\('print3d-products'/g, '// localStorage.setItem(\'print3d-products\'');
+            code = code.replace(/localStorage\.setItem\('print3d-categories'/g, '// localStorage.setItem(\'print3d-categories\'');
+            code = code.replace(/setInterval\(saveAllData, 10000\);/g, '// auto-save removed');
+            
+            script.textContent = code;
+            
+            const blob1 = new Blob(['<!DOCTYPE html>\n' + clone.outerHTML], {type: 'text/html'});
+            const link1 = document.createElement('a');
+            link1.href = URL.createObjectURL(blob1);
+            link1.download = 'index.html';
+            link1.click();
+            
+            alert('✅ index.html exportado!\n\n🚀 Subilo a GitHub/Netlify.\n\nLas imágenes están embebidas (base64).');
+        }
+
+        // START
+        init();
+    </script>
+
+
+</body></html>
